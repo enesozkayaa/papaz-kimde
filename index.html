@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#2a170c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Papaz Kimde</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="ikonlar/ikon-192.png">
+  <link rel="apple-touch-icon" href="ikonlar/ikon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="sahne"></div>
+
+  <!-- Ana menü -->
+  <section id="menu">
+    <div class="kart">
+      <div class="baslikPapaz">🃏</div>
+      <h1>Papaz Kimde</h1>
+      <p class="alt">Papazı yanındakine kaptır, elinde kalmasın!</p>
+      <p id="onlineSayi" hidden></p>
+      <label>Adın <input id="adim" maxlength="12" placeholder="Adını yaz" autocomplete="off"></label>
+      <h3>Karakterini seç</h3>
+      <div id="karakterler"></div>
+      <p id="karakterAciklama" class="aciklama"></p>
+      <div class="menuDugmeleri">
+        <button id="giydirBtn" class="ikinciBtn">🎨 Karakterini giydir</button>
+        <button id="istatistikBtn" class="ikinciBtn">📊 İstatistik ve rozetler</button>
+      </div>
+      <details class="ayarlar" open>
+        <summary>⚙️ Oyun ayarları</summary>
+        <div class="kagitSecim">
+          <b>🃏 Deste</b>
+          <label><input type="radio" name="deste" value="kisa"> <b>Kısa</b> <small>As, 10, Vale, Kız + tek Papaz (17 kart) · hızlı</small></label>
+          <label><input type="radio" name="deste" value="orta"> <b>Orta</b> <small>7'den As'a + tek Papaz (29 kart)</small></label>
+          <label><input type="radio" name="deste" value="tam"> <b>Tam</b> <small>52'lik desteden 3 papaz çıkar (49 kart) · uzun</small></label>
+        </div>
+        <div class="kagitSecim">
+          <b>🔁 El sayısı</b>
+          <div class="yanyana"><label><input type="radio" name="elSayisi" value="3"> 3 el</label><label><input type="radio" name="elSayisi" value="5"> 5 el</label><label><input type="radio" name="elSayisi" value="7"> 7 el</label></div>
+        </div>
+        <p id="ayarNotu" class="not"></p>
+      </details>
+      <button id="botlaBtn" class="buyuk">🤖 Botlarla oyna</button>
+      <div class="online">
+        <h3>👥 Arkadaşlarla oyna</h3>
+        <button id="odaKurBtn" class="buyuk ikinciBtn">🏠 Oda kur</button>
+        <div class="katilSatiri">
+          <input id="odaKoduGir" maxlength="5" placeholder="Oda kodu" autocomplete="off" autocapitalize="characters" spellcheck="false">
+          <button id="katilBtn">Katıl</button>
+        </div>
+        <button id="geriDonBtn" class="ikinciBtn" hidden></button>
+        <div id="onlineDurum"></div>
+        <button id="baslatBtn" class="buyuk" hidden>▶️ Oyunu başlat</button>
+        <button id="odaIptalBtn" class="ikinciBtn" hidden>❌ Odayı kapat</button>
+        <p class="not">2-4 kişi. Boş koltuklarda bot oynar. Oyundan düşenin yerine bot geçer; aynı adla geri girince kaldığı yerden devam eder. 🎤 ile sesli konuşabilirsiniz.</p>
+      </div>
+      <details>
+        <summary>Nasıl oynanır?</summary>
+        <ul>
+          <li>Destede <b>tek bir Papaz</b> var, eşi yok. Bütün kartlar dağıtılır.</li>
+          <li>Herkes elindeki <b>aynı sayıdaki çiftleri</b> masaya atar (iki Vale, iki 7… renk fark etmez).</li>
+          <li>Sıran gelince yanındakinin elinden <b>arkası dönük</b> bir kart çekersin. Çift olursa o çift de masaya gider.</li>
+          <li>Kart seçerken karşındakinin <b>yüzüne bak</b>: papazın üstüne gelince belli edebilir… ya da blöf yapabilir!</li>
+          <li>Senden kart çekilecekken bir kartı <b>yem</b> yapıp yukarı çıkarabilir, elini <b>karıştırabilirsin</b>.</li>
+          <li>Kartları biten kurtulur. Sonunda <b>papaz elinde kalana 1 ceza</b> puanı yazılır.</li>
+          <li>Seçilen el sayısı bitince <b>en az cezası olan</b> kazanır.</li>
+        </ul>
+      </details>
+      <p class="not">Bilgisayarda fareyi oynatınca, telefonda ekranı sürükleyince kafanı çevirirsin. 👀</p>
+    </div>
+  </section>
+
+  <!-- Oyun ekranı -->
+  <section id="oyun" hidden>
+    <header id="ust">
+      <button id="menuBtn" title="Ana menü">☰</button>
+      <div id="masaKarti"></div>
+      <div class="sagDugmeler">
+        <span id="odaBilgisi" title="Oda kodu" hidden></span>
+        <button id="sohbetBtn" title="Sohbet" hidden>💬<span id="okunmamis" hidden></span></button>
+        <button id="sesliBtn" title="Sesli sohbete katıl" hidden>🎤</button>
+        <button id="puanBtn" title="Ceza tablosu">📋</button>
+        <button id="muzikBtn" title="Müzik">🎵</button>
+        <button id="sesBtn" title="Ses">🔊</button>
+      </div>
+    </header>
+    <div id="etiketler"></div>
+    <div id="mesaj"></div>
+    <div id="acilan" hidden></div>
+    <div id="alt">
+      <div id="benimBilgi"></div>
+      <div id="sureCubugu"><div></div></div>
+      <p id="elIpucu"></p>
+      <div id="el"></div>
+      <button id="karistirBtn" hidden>🔀 Elimi karıştır</button>
+      <div id="tepkiler"><button>😂</button><button>😡</button><button>😱</button><button>🤥</button><button>🤠</button></div>
+
+    </div>
+    <div id="domatesCubugu" hidden></div>
+    <div id="cekmePaneli" hidden></div>
+    <div id="cekilenKart" hidden></div>
+    <canvas id="domatesKanvas"></canvas>
+    <div id="olumPerdesi" hidden>
+      <h2>🕯️ Mumun söndü…</h2>
+      <p>Yalancının mumu yatsıya kadar yanarmış. Oyunu izlemeye devam edebilirsin; aşağıdan yaşayanlara 🍅 domates atabilirsin!</p>
+      <button id="olumMenuBtn" class="ikinciBtn">🏠 Ana menü</button>
+    </div>
+    <div id="sonEkran" hidden>
+      <div class="kart">
+        <h2 id="sonBaslik"></h2>
+        <p id="sonYazi"></p>
+        <div id="oduller"></div>
+        <div id="yeniRozet"></div>
+        <button id="tekrarBtn" class="buyuk">🔁 Tekrar oyna</button>
+        <p id="sonBekle" class="not" hidden>⏳ Oda sahibi yeni oyunu başlatınca masaya otomatik döneceksin.</p>
+        <button id="sonMenuBtn" class="ikinciBtn">🏠 Ana menü</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ceza tablosu -->
+  <section id="tabloPaneli" class="perde" hidden>
+    <div class="kart">
+      <h2>📋 Ceza tablosu</h2>
+      <div id="tabloIcerik" class="tabloKap"></div>
+      <button id="tabloKapat" class="ikinciBtn">Kapat</button>
+    </div>
+  </section>
+
+  <!-- Karakter giydirme -->
+  <section id="giydirPaneli" class="perde" hidden>
+    <div class="kart">
+      <h2 id="giydirBaslik">🎨 Giydir</h2>
+      <div id="giydirOnizleme"></div>
+      <div id="giydirSecenekler"></div>
+      <button id="giydirSifirla" class="ikinciBtn">↩️ Varsayılan kıyafet</button>
+      <button id="giydirKapat" class="buyuk">✅ Tamam</button>
+    </div>
+  </section>
+
+  <!-- İstatistik ve rozetler -->
+  <section id="istatistikPaneli" class="perde" hidden>
+    <div class="kart">
+      <h2>📊 İstatistiklerin</h2>
+      <div id="istatistikIcerik"></div>
+      <button id="istatistikKapat" class="ikinciBtn">Kapat</button>
+    </div>
+  </section>
+
+  <!-- Oda sohbeti -->
+  <section id="sohbetPaneli" class="perde" hidden>
+    <div class="kart">
+      <h2>💬 Sohbet</h2>
+      <div id="sohbetListe"></div>
+      <div id="hizliMesaj"><button>Yalancı! 🤥</button><button>Bana güven 🤠</button><button>Eyvah 😱</button><button>😂</button><button>Hadi!</button></div>
+      <form id="sohbetForm"><input id="sohbetYazi" maxlength="120" placeholder="Mesaj yaz..." autocomplete="off"><button>Gönder</button></form>
+      <button id="sohbetKapat" class="ikinciBtn">Kapat</button>
+    </div>
+  </section>
+
+  <!-- Misafir: oda sahibiyle bağlantı koptu -->
+  <section id="baglantiEkrani" class="perde" hidden>
+    <div class="kart">
+      <h2>📡 Bağlantı koptu</h2>
+      <p>Oda sahibiyle bağlantın kesildi. İnternetin geldiyse yeniden bağlan; bu arada yerine bot oynuyor, kaldığın yerden devam edersin.</p>
+      <button id="yenidenBaglanBtn" class="buyuk">🔁 Yeniden bağlan</button>
+      <button id="baglantiCikBtn" class="ikinciBtn">🏠 Ana menü</button>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js"></script>
+  <script src="ses.js"></script>
+  <script src="motor.js"></script>
+  <script src="karakterler.js"></script>
+  <script src="sahne.js"></script>
+  <script src="oyun.js"></script>
+  <script src="giydir.js"></script>
+  <script src="istatistik.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <script src="ag.js"></script>
+  <script src="sayac.js"></script>
+  <script>
+    if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js');
+  </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!--
+  Papaz Kimde - uygulama simgesini çizer: koyu ahşap zemin, kovboy şapkalı yanan mum.
+  Adres sonuna ?boyut=512&pay=0.08 yazılır (pay: kenar boşluğu; "maskable" simgede daha büyük).
+  PNG'ye çevirmek için Edge görünmez modda ekran görüntüsü alır:
+    msedge --headless --hide-scrollbars --window-size=512,512 --screenshot=ikonlar/ikon-512.png "file:///.../araclar/ikon-ciz.html?boyut=512&pay=0.08"
+-->
+<html>
+<head>
+<meta charset="UTF-8">
+<style>html, body { margin: 0; background: #2a170c; overflow: hidden; } canvas { display: block; }</style>
+</head>
+<body>
+<script>
+  const ayar = new URLSearchParams(location.search);
+  const boyut = +(ayar.get('boyut') || 512);
+  const pay = +(ayar.get('pay') || 0.08);
+  const c = document.createElement('canvas');
+  c.width = c.height = boyut;
+  document.body.appendChild(c);
+  const g = c.getContext('2d');
+  g.scale(boyut / 512, boyut / 512);
+
+  // Arka plan: mum ışığıyla aydınlanan koyu ahşap
+  const arka = g.createRadialGradient(256, 210, 20, 256, 256, 400);
+  arka.addColorStop(0, '#a8642a');
+  arka.addColorStop(0.45, '#5a3016');
+  arka.addColorStop(1, '#1e0f06');
+  g.fillStyle = arka;
+  g.fillRect(0, 0, 512, 512);
+  g.strokeStyle = 'rgba(20,8,0,.35)';
+  g.lineWidth = 3;
+  for (let x = 64; x < 512; x += 64) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, 512); g.stroke(); }
+
+  g.save();
+  const k = 1 - pay;
+  g.translate(256, 256);
+  g.scale(k, k);
+  g.translate(-256, -256);
+
+  // Işık halesi
+  const hale = g.createRadialGradient(256, 230, 10, 256, 230, 230);
+  hale.addColorStop(0, 'rgba(255,200,90,.7)');
+  hale.addColorStop(1, 'rgba(255,160,40,0)');
+  g.fillStyle = hale;
+  g.fillRect(0, 0, 512, 512);
+  // Yelpaze: iki arkası dönük kart + ortada PAPAZ
+  function kart(x, y, aci, ciz) {
+    g.save(); g.translate(x, y); g.rotate(aci);
+    g.shadowColor = '#0009'; g.shadowBlur = 22; g.shadowOffsetY = 10;
+    g.fillStyle = '#fbf6e8'; g.beginPath(); g.roundRect(-95, -135, 190, 270, 18); g.fill();
+    g.shadowColor = 'transparent';
+    ciz();
+    g.restore();
+  }
+  const sirt = () => {
+    g.fillStyle = '#6e1f1a'; g.beginPath(); g.roundRect(-85, -125, 170, 250, 12); g.fill();
+    g.strokeStyle = '#e6c27a'; g.lineWidth = 6; g.strokeRect(-72, -112, 144, 224);
+  };
+  kart(150, 280, -0.35, sirt);
+  kart(362, 280, 0.35, sirt);
+  kart(256, 250, 0, () => {
+    g.strokeStyle = '#b3261e'; g.lineWidth = 7; g.strokeRect(-70, -105, 140, 210);
+    g.fillStyle = '#f2d27a';
+    g.beginPath(); g.moveTo(-50, -40); g.lineTo(-50, -80); g.lineTo(-25, -58); g.lineTo(0, -92); g.lineTo(25, -58); g.lineTo(50, -80); g.lineTo(50, -40); g.closePath(); g.fill();
+    g.fillStyle = '#f0c8a0'; g.beginPath(); g.arc(0, 0, 40, 0, 7); g.fill();
+    g.fillStyle = '#1a1a1a';
+    g.beginPath(); g.arc(-14, -6, 5, 0, 7); g.arc(14, -6, 5, 0, 7); g.fill();
+    g.beginPath(); g.ellipse(-15, 14, 18, 6, 0.3, 0, 7); g.ellipse(15, 14, 18, 6, -0.3, 0, 7); g.fill();
+    g.fillStyle = '#b3261e'; g.font = '900 30px Georgia, serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText('PAPAZ', 0, 72);
+    g.font = '900 34px Georgia, serif'; g.fillText('P', -66, -100);
+  });
+  g.restore();
+</script>
+</body>
+</html>
