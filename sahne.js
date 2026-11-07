@@ -1147,7 +1147,14 @@ const Sahne = (() => {
         m.position.copy(bas);
         m.visible = false;
         yigin.add(m);
-        const hedef = merkez.clone().add(V(Math.cos(aci) * 0.07 * (j ? 1 : -1), MASA_Y + 0.004 * (yigin.children.length + 1), Math.sin(aci) * 0.07 * (j ? 1 : -1)));
+        const hedef = merkez.clone().add(V(Math.cos(aci) * 0.07 * (j ? 1 : -1), 0, Math.sin(aci) * 0.07 * (j ? 1 : -1)));
+        // Masaya yapışık dursun: sadece altında kalan (üst üste binen) kartlar kadar yükselir
+        let ust = MASA_Y + 0.0022;
+        yigin.children.forEach(c => {
+          if (c !== m && c.userData.yer && Math.hypot(c.userData.yer.x - hedef.x, c.userData.yer.z - hedef.z) < 0.2) ust = Math.max(ust, c.userData.yer.y + 0.0045);
+        });
+        hedef.y = ust;
+        m.userData.yer = hedef.clone();
         const don = new THREE.Euler(0, aci + (j ? 0.15 : -0.15), 0);
         animEkle(0.01, () => (m.visible = true), null, gecikme + ci * 0.35 + j * 0.1);
         hedefle(m, hedef, don, 0.5, gecikme + ci * 0.35 + j * 0.1, true);
