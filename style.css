@@ -150,7 +150,9 @@ details li { margin: 6px 0; }
 #benimBilgi.sirada { border-color: var(--altin); box-shadow: 0 0 14px #e6b04aaa; }
 #sureCubugu { width: min(420px, 90vw); height: 5px; border-radius: 3px; background: #0006; overflow: hidden; }
 #sureCubugu div { height: 100%; width: 0; background: linear-gradient(90deg, #e6b04a, #ff7a2a); }
-#el { display: flex; justify-content: center; gap: 6px; min-height: 40px; }
+#el { display: flex; justify-content: center; gap: 6px; min-height: 40px; max-width: 100vw; }
+#el .elKart { flex-shrink: 0; }
+#el .elKart:hover { z-index: 2; }
 .elKart {
   width: min(88px, 17vw); aspect-ratio: 200 / 294; padding: 0; border: none; background: none; border-radius: 7px;
   transition: transform .15s; box-shadow: 0 4px 10px #000a; position: relative;
@@ -380,3 +382,7 @@ button:disabled { opacity: .55; cursor: default; }
 .tabloKap table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .tabloKap th, .tabloKap td { padding: 4px 6px; text-align: center; border-bottom: 1px solid #8a5a2a55; }
 .tabloKap .toplam td { font-weight: 900; color: var(--altin); border-top: 2px solid var(--altin); }
+
+/* iPhone: yazı kutusuna dokununca ekran büyümesin (16px altı yazılar büyütme yapar), çift dokunuşla büyütme olmasın */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; touch-action: manipulation; }
+input, select, textarea { font-size: max(16px, 1em); }

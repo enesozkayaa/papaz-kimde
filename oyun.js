@@ -284,8 +284,23 @@ function elimCiz(hedefim) {
   }
   kap.innerHTML = ben.el.map((k, i) => `<button class="elKart${ben.yem === i ? ' yem' : ''}${ui.gezinilen === i ? ' gezinilen' : ''}${k.r === 'K' ? ' papazKart' : ''}" data-i="${i}">${kartImg(k)}</button>`).join('');
   $('karistirBtn').hidden = ben.el.length < 2;
+  eliSigdir();
   $('elIpucu').textContent = hedefim ? 'Bir karta dokun: yem olarak yukarı kalkar (karşındaki görür). 🔀 ile karıştır.' : '';
 }
+// Kartlar ekrana sığmazsa iç içe dizilir: her kartın sol üst köşesi (sayı + simge) görünür kalır
+function eliSigdir() {
+  const kap = $('el');
+  const kartlar = [...kap.querySelectorAll('.elKart')];
+  if (!kartlar.length) return;
+  kartlar.forEach(k => (k.style.marginLeft = ''));
+  const w = kartlar[0].getBoundingClientRect().width;
+  const bosluk = 6, n = kartlar.length;
+  const alan = Math.min(window.innerWidth, document.documentElement.clientWidth) - 20;
+  if (n < 2 || n * w + (n - 1) * bosluk <= alan) return;
+  const adim = Math.max(14, (alan - w) / (n - 1));    // kartlar arası görünen genişlik
+  kartlar.forEach((k, i) => { if (i) k.style.marginLeft = `${adim - w - bosluk}px`; });
+}
+window.addEventListener('resize', () => requestAnimationFrame(eliSigdir));
 $('el').addEventListener('click', e => {
   const b = e.target.closest('button[data-i]');
   if (!b) return;
